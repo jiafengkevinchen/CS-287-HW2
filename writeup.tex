@@ -71,7 +71,7 @@ The focus of the problem set is sentiment classification. We are given
 \emph{sentences} and aim to classify them as either positive or negative
 sentiment (a binary classification). These predictions can be made in a
 probabilistic fashion by writing $y_i$ as the event that the $i$th sentence is
-positive sentiment, and calculating $p(y_i)$ conditional on the sentence.
+positive sentiment, and calculating $p(y_i)$.
 
 Sentences are themselves sequences of words $w \in \mcV$ in some vocabulary
 $\mcV$. In particular, there will be two special words, $w_\text{unk},\,
@@ -95,7 +95,7 @@ models.
 \subsection{Naive Bayes}
 \label{subsec:nb}
 
-
+As we alluded to earlier, we can treat our prediction problem as probabilistic. 
 
 \subsection{Logistic Regression}
 \label{subsec:logistic}
