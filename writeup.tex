@@ -257,6 +257,20 @@ and ``it good, not bad'' cannot be distinguished.
 % \end{itemize}
 % 
 
+\subsection{Ensemble}
+\label{sub:ensemble}
+
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=\textwidth]{corrs.pdf}
+  \caption{Correlation between Naive Bayes, Logistic, and CNN predictions on
+  the validation set. We plot $\text{logit}$ of the probabilities that a
+  sentence is negative sentiment against each other (we clip $\pm \infty$
+  values in logit-space at $\pm 10$).}
+  \label{fig:figure1}
+\end{figure}
+
 \section{Experiments}
 
 Finally we end with the experimental section. Each assignment will make clear
@@ -297,11 +311,11 @@ cannot be computed since model does not output likelihood.}
 
 \end{landscape}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=6cm]{cluster_viz}
-  \caption{\label{fig:clusters} Sample qualitative chart.}
-\end{figure}
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=6cm]{cluster_viz}
+%   \caption{\label{fig:clusters} Sample qualitative chart.}
+% \end{figure}
 
 
 \section{Conclusion}
