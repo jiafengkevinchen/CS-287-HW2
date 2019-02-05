@@ -236,9 +236,6 @@ Model & Weight \\
 \label{tab:ensemble}
 \end{table}
 
-\subsection{Ensemble voting}
-\label{subsec:voting}
-
 % \section{Model and Algorithms---Old}
 % 
 % Here you specify the model itself. This section should formally
@@ -306,10 +303,6 @@ Model & Weight \\
 % \end{itemize}
 % 
 
-\subsection{Ensemble}
-\label{sub:ensemble}
-
-
 \begin{figure}[tb]
   \centering
   \includegraphics[width=\textwidth]{corrs.pdf}
@@ -319,6 +312,20 @@ Model & Weight \\
   values in logit-space at $\pm 10$).}
   \label{fig:corrs}
 \end{figure}
+
+\subsection{Ensemble voting}
+\label{subsec:voting}
+
+In addition, we also implement an even simpler form of ensembling. Instead of
+averaging each model's output probability, we can instead give each model a
+``vote'' either for positive or negative sentiment (based on whether the model
+predicts a probability  below or above 0.5). Then, of the three models'
+predictions, we pick the prediction that happens at least two times (the
+majority).
+
+While this mechanism is less complex, we expect it to be more robust to strong
+convictions from any given model, thus insulating the ensemble from
+overconfidence. 
 
 \section{Experiments}
 We show the accuracy and average loss (under the cross entropy criterion) for
