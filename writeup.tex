@@ -222,17 +222,18 @@ our validation set. We display the weights that result from 20 epochs of
 training in \cref{tab:ensemble}
 
 \begin{table}
-\begin{tabular}
-\label{tab:ensemble}
+\centering
+\begin{tabular}{ll}
 \toprule
 Model & Weight \\
 \midrule
-\nameref{subsec:nb}  & 0.1755
-\nameref{subsec:logistic} & 0.3895
-\nameref{subsec:convnet} & 0.4349
+\nameref{subsec:nb}  & 0.1755 \\
+\nameref{subsec:logistic} & 0.3895 \\
+\nameref{subsec:convnet} & 0.4349 \\
 \bottomrule
-\caption{Weights on each model for ensemble}
 \end{tabular}
+\caption{Weights on each model for ensemble}
+\label{tab:ensemble}
 \end{table}
 
 \subsection{Ensemble voting}
