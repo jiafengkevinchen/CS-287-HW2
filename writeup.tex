@@ -95,83 +95,125 @@ models.
 \subsection{Naive Bayes}
 \label{subsec:nb}
 
-As we alluded to earlier, we can treat our prediction problem as probabilistic. 
-
 \subsection{Logistic Regression}
 \label{subsec:logistic}
 
 \subsection{Continuous Bag of Words}
 \label{subsec:cbow}
 
+A downside of logistic regression is that we have as many parameters as the size
+of our vocabulary $\mcV$. This means that without an extensive training set, we
+run the risk of overfitting. To address this, we can reduce the dimensionality
+of our embedding by using \citet{mikolov2013efficient}'s word embeddings. This model has three parts:
+
+\begin{enumerate}
+\item We start by using average-pooling over time on the word-embeddings to get
+a vector of dimension $d$ for each sentence.
+\item Then, we pass that vector through a linear transform to get another vector
+of dimension $d_2$ which then gets passed through a non-linear transformation
+(ReLU) to make up the hidden layer.
+\item Finally, we pass the hidden layer output through another linear layer to
+get a vector with two elements, and a softmax transformation to turn these
+values into the probabilities of positive and negative sentiment.
+\end{enumerate}
+
+The model has two parameter matrices of size $d \times d_2$ and $d_2 \times 2$
+respectively. We implement the model for $d_2=100$. We train using Adam for 20
+epochs. In summary, the model's steps are visualized in \cref{fig:cbow}.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=\textwidth]{figs/cbow}
+\caption{CBOW model pipeline}
+\label{fig:cbow}
+\end{figure}
+
+We call this model a \emph{bag of words} because the order of the words is lost
+in the average-pooling over time. In other words, any permutation of a sentence
+will result in the same prediction by this model. 
+
 \subsection{Convolutional Neural Network}
 \label{subsec:convnet}
 
-\section{Model and Algorithms---Old}
+While the \nameref{subsec:cbow} model makes use of the pre-trained dense
+embeddings, it suffers a limitation from the bag-of-words construction. Because
+the order of words is not taken into account, the sentences ``the movie was
+good, not boring'' and ``the movie was boring, not good'' cannot be
+distinguished. 
 
-Here you specify the model itself. This section should formally
-describe the model used to solve the task proposed in the previous
-section. This section should try to avoid introducing new vocabulary
-or notation, when possible use the notation from the previous section.
-Feel free to use the notation from class, but try to make the note
-understandable as a standalone piece of text.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=\textwidth]{figs/convnet.png}
+\caption{Convolutional Neural Network Model}
+\label{fig:convnet}
+\end{figure}
 
-This section is also a great place to include other material that
-describes the underlying structure and choices of your model, for
-instance here are some example tables and algorithms from full
-research papers:
-
-
-
-\begin{itemize}
-\item diagrams of your model,
-
-  \begin{center}
-    \includegraphics[width=0.4\textwidth]{network}
-  \end{center}
-\item feature tables,
-
-  \begin{center}
-    \begin{tabular}{@{}lll@{}}
-      \toprule
-      &\multicolumn{2}{c}{Mention Features  } \\
-      & Feature & Value Set\\
-      \midrule
-      & Mention Head & $\mcV$ \\
-      & Mention First Word & $\mcV$ \\
-      & Mention Last Word & $\mcV$ \\
-      & Word Preceding Mention & $\mcV$ \\
-      & Word Following Mention & $\mcV$\\
-      & \# Words in Mention & $\{1, 2, \ldots \}$ \\
-      & Mention Type & $\mathcal{T}$ \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-
-\item pseudo-code,
-
-  \begin{algorithmic}[1]
-    \Procedure{Linearize}{$x_1\ldots x_N$, $K$, $g$}
-    \State{$B_0 \gets \langle (\langle \rangle, \{1, \ldots, N\}, 0, \boldh_0, \mathbf{0})  \rangle$}
-    \For{$m = 0, \ldots, M-1$ }
-    \For{$k = 1, \ldots, |B_m|$}
-    \For{$i \in \mcR$}
-    \State{$(y, \mcR, s, \boldh) \gets \mathrm{copy}(B_m^{(k)})$}
-    \For{word $w$ in phrase $x_i$}
-    \State{$y \gets y $ append $w$ }
-    \State{$s \gets s + \log q(w, \boldh) $ }
-    \State{$\boldh \gets \delta(w, \boldh)$}
-    \EndFor{}
-    \State{$B_{m+|w_i|} \gets B_{m+|w_i|} + (y, \mcR - i, s,   \boldh)$}
-    \State{keep top-$K$ of $B_{m+|w_i|}$ by $f(x, y) + g(\mcR)$}
-    \EndFor{}
-    \EndFor{}
-    \EndFor{}
-    \State{\Return{$B_{M}^{(k)}$}}
-    \EndProcedure{}
-  \end{algorithmic}
-
-\end{itemize}
-
+% \section{Model and Algorithms---Old}
+% 
+% Here you specify the model itself. This section should formally
+% describe the model used to solve the task proposed in the previous
+% section. This section should try to avoid introducing new vocabulary
+% or notation, when possible use the notation from the previous section.
+% Feel free to use the notation from class, but try to make the note
+% understandable as a standalone piece of text.
+% 
+% This section is also a great place to include other material that
+% describes the underlying structure and choices of your model, for
+% instance here are some example tables and algorithms from full
+% research papers:
+% 
+% 
+% 
+% \begin{itemize}
+% \item diagrams of your model,
+% 
+%   \begin{center}
+%     \includegraphics[width=0.4\textwidth]{network}
+%   \end{center}
+% \item feature tables,
+% 
+%   \begin{center}
+%     \begin{tabular}{@{}lll@{}}
+%       \toprule
+%       &\multicolumn{2}{c}{Mention Features  } \\
+%       & Feature & Value Set\\
+%       \midrule
+%       & Mention Head & $\mcV$ \\
+%       & Mention First Word & $\mcV$ \\
+%       & Mention Last Word & $\mcV$ \\
+%       & Word Preceding Mention & $\mcV$ \\
+%       & Word Following Mention & $\mcV$\\
+%       & \# Words in Mention & $\{1, 2, \ldots \}$ \\
+%       & Mention Type & $\mathcal{T}$ \\
+%       \bottomrule
+%     \end{tabular}
+%   \end{center}
+% 
+% \item pseudo-code,
+% 
+%   \begin{algorithmic}[1]
+%     \Procedure{Linearize}{$x_1\ldots x_N$, $K$, $g$}
+%     \State{$B_0 \gets \langle (\langle \rangle, \{1, \ldots, N\}, 0, \boldh_0, \mathbf{0})  \rangle$}
+%     \For{$m = 0, \ldots, M-1$ }
+%     \For{$k = 1, \ldots, |B_m|$}
+%     \For{$i \in \mcR$}
+%     \State{$(y, \mcR, s, \boldh) \gets \mathrm{copy}(B_m^{(k)})$}
+%     \For{word $w$ in phrase $x_i$}
+%     \State{$y \gets y $ append $w$ }
+%     \State{$s \gets s + \log q(w, \boldh) $ }
+%     \State{$\boldh \gets \delta(w, \boldh)$}
+%     \EndFor{}
+%     \State{$B_{m+|w_i|} \gets B_{m+|w_i|} + (y, \mcR - i, s,   \boldh)$}
+%     \State{keep top-$K$ of $B_{m+|w_i|}$ by $f(x, y) + g(\mcR)$}
+%     \EndFor{}
+%     \EndFor{}
+%     \EndFor{}
+%     \State{\Return{$B_{M}^{(k)}$}}
+%     \EndProcedure{}
+%   \end{algorithmic}
+% 
+% \end{itemize}
+% 
 
 \section{Experiments}
 
