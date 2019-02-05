@@ -97,7 +97,6 @@ the embedding dimension. We use \citet{mikolov2013efficient}'s pre-trained word
 embeddings ($d=300$) for the \nameref{subsec:cbow} and \nameref{subsec:convnet}
 models.
 
-
 \section{Model and Algorithms}
 \label{sec:models}
 
@@ -183,12 +182,61 @@ embeddings, it suffers a limitation from the bag-of-words construction. Because
 the order of words is not taken into account, the sentences ``it bad, not good''
 and ``it good, not bad'' cannot be distinguished. 
 
+To this end, we employ a one-dimensional convolution of the word embeddings.
+That is, we take a sliding window with size either 3, 4, or 5 over time, then
+take a linear transform to generate features for each location of the sliding
+window. We generate 100 features per window size.
+
+Then, we max pool over time to get a fixed number of features for each sentence.
+These features then get passed through a ReLU and a dropout with $p=.5$ to get a
+hidden layer than finally gets passed through a linear transformation and a
+softmax to get our probabilities for each label.
+
+The procedure is summarized in \cref{fig:convnet}.
+
 \begin{figure}[htb]
 \centering
 \includegraphics[width=\textwidth]{figs/convnet.png}
 \caption{Convolutional Neural Network Model}
 \label{fig:convnet}
 \end{figure}
+
+\subsection{Ensemble}
+\label{subsec:ensemble}
+
+For our generalizations, we create an ensemble of models in attempt to leverage
+the strengths of each. We construct our final ensemble from the
+\nameref{subsec:nb}, \nameref{subsec:logistic}, and \nameref{subsec:convnet}
+models. We pick these since they are our three highest-performing models and we
+expect each to capture something slightly different.
+
+We depict a pair-plot of the predictions of each of the three models in
+\cref{fig:corrs} to highlight that while the models do have a high degree of
+concordance, they are also not making exactly the same predictions, and so could
+benefit from an ensemble.
+
+To implement the ensemble, we create a weighted average of the probability
+predictions of each model. We enforce that the weights are positive and sum to 1
+by optimizing over log-space weights and training these hyper-parameters over
+our validation set. We display the weights that result from 20 epochs of
+training in \cref{tab:ensemble}
+
+\begin{table}
+\begin{tabular}
+\label{tab:ensemble}
+\toprule
+Model & Weight \\
+\midrule
+\nameref{subsec:nb}  & 0.1755
+\nameref{subsec:logistic} & 0.3895
+\nameref{subsec:convnet} & 0.4349
+\bottomrule
+\caption{Weights on each model for ensemble}
+\end{tabular}
+\end{table}
+
+\subsection{Ensemble voting}
+\label{subsec:voting}
 
 % \section{Model and Algorithms---Old}
 % 
