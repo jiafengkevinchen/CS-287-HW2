@@ -328,6 +328,7 @@ convictions from any given model, thus insulating the ensemble from
 overconfidence. 
 
 \section{Experiments}
+\label{sec:experiment}
 We show the accuracy and average loss (under the cross entropy criterion) for
 all models in \Cref{tab:results}. We see that the ensemble models seem to
 generally outperform non-ensemble models in validation accuracy, and
@@ -382,10 +383,23 @@ cannot be computed since model does not output likelihood.}
 
 
 \section{Conclusion}
+We implemented \nameref{subsec:nb}, \nameref{subsec:cbow}, 
+\nameref{subsec:logistic}, and \nameref{subsec:convnet} and performed
+experiments in \Cref{sec:experiment}. We also implemented ensemble classifiers
+that seek to leverage model averaging in achieving superior error rates. We find
+that Naive Bayes, despite its simplicity, performs quite well compared to
+deep learning-based models, and ensembles models do effectively leverage the
+imperfect correlation in model predictions to deliver superior results. In our
+experiments, we have noticed that adding depth to neural network-based models do
+not necessarily increase the classification rate on the validation set due to
+overfitting, and we have found that combatting overfitting is quite challenging,
+despite tools like penalized likelihood regularization and dropout. Moreover, it
+is somewhat perplexing that \nameref{subsec:cbow} and \nameref{subsec:convnet},
+which both take input from the \textsf{word2vec} embedding developed by 
+\cite{mikolov2013efficient} do not outperform conventional bag-of-words models,
+since the word embeddings are supposed to capture semantic relationships between
+different words. 
 
-End the write-up with a very short recap of the main experiments and the main
-results. Describe any challenges you may have faced, and what could have been
-improved in the model.
 
 \bibliographystyle{apalike}
 \bibliography{writeup}
