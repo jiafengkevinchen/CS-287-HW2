@@ -1,13 +1,19 @@
 
 \documentclass[11pt]{article}
 
+% for footnotes
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
 \usepackage{common}
 \usepackage{macros}
 \usepackage{nameref}
 \usepackage{pdflscape}
 
 \title{HW1: Classification}
-\author{Jiafeng Chen \and Yufeng Ling \and Francisco Rivera}
+\author{Jiafeng Chen\footnote{Equal contribution} \and Yufeng Ling \and
+Francisco Rivera$^{*}$}
 \begin{document}
 
 \maketitle{}
@@ -155,9 +161,8 @@ will result in the same prediction by this model.
 
 While the \nameref{subsec:cbow} model makes use of the pre-trained dense
 embeddings, it suffers a limitation from the bag-of-words construction. Because
-the order of words is not taken into account, the sentences ``the movie was
-good, not boring'' and ``the movie was boring, not good'' cannot be
-distinguished. 
+the order of words is not taken into account, the sentences ``it bad, not good''
+and ``it good, not bad'' cannot be distinguished. 
 
 \begin{figure}[htb]
 \centering
