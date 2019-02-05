@@ -40,28 +40,28 @@ Francisco Rivera$^{*}$}
 In this write-up, our main focus is on building classifiers of sentiment in sentences. We implemented naive Bayes unigram classifier (\cite{wang2012baselines}), logistic regression over word types, a continuous bag-of-word neural network with embeddings (\cite{mikolov2013efficient}) and a convolutional neural network (\cite{kim2014convolutional}). In addition, we experimented different ensemble methods and made improvements.
 
 
-\section{Problem Description---Old}
-
-In general, homeworks will be specified using informal
-language. As part of the assignment, we expect you to write-out a
-definition of the problem and your model in formal language. For this
-class, we will use the following notation:
-
-\begin{itemize}
-\item $\boldb, \boldm$;  bold letters for vectors.
-\item $\boldB, \boldM$;  bold capital letters for matrices.
-\item $\mcB, \mcM$;  script-case for sets.
-\item $b_i, x_i$; lower case for scalars or indexing into vectors.
-\end{itemize}
-
-
-For instance in natural language processing, it is common to use
-discrete sets like $\mcV$ for the vocabulary of the language, or $\mcT$ for a
-tag set of the language.  We might also want one-hot vectors
-representing words. These will be of the type
-$\boldv \in \{0,1\}^{|\mcV|}$. In a note, it is crucial to define the
-types of all variables that are introduced. The problem description is the
-right place to do this.
+% \section{Problem Description---Old}
+% 
+% In general, homeworks will be specified using informal
+% language. As part of the assignment, we expect you to write-out a
+% definition of the problem and your model in formal language. For this
+% class, we will use the following notation:
+% 
+% \begin{itemize}
+% \item $\boldb, \boldm$;  bold letters for vectors.
+% \item $\boldB, \boldM$;  bold capital letters for matrices.
+% \item $\mcB, \mcM$;  script-case for sets.
+% \item $b_i, x_i$; lower case for scalars or indexing into vectors.
+% \end{itemize}
+% 
+% 
+% For instance in natural language processing, it is common to use
+% discrete sets like $\mcV$ for the vocabulary of the language, or $\mcT$ for a
+% tag set of the language.  We might also want one-hot vectors
+% representing words. These will be of the type
+% $\boldv \in \{0,1\}^{|\mcV|}$. In a note, it is crucial to define the
+% types of all variables that are introduced. The problem description is the
+% right place to do this.
 
 % NLP is also
 % full of sequences. For instance sentences, $w_1, \ldots, w_N$, where
@@ -100,7 +100,6 @@ the embedding dimension. We use \citet{mikolov2013efficient}'s pre-trained word
 embeddings ($d=300$) for the \nameref{subsec:cbow} and \nameref{subsec:convnet}
 models.
 
-
 \section{Model and Algorithms}
 \label{sec:models}
 
@@ -129,10 +128,10 @@ where $N_+$ and $N_-$ are respectively the number of positive sentences and nega
 \subsection{Logistic Regression}
 \label{subsec:logistic}
 
-In this model,  we consider the bag-of-words transform \[x_i = \phi
+In this model,  we consider the bag-of-words transform \[\bm x_i = \phi
 (w_1^i,\ldots,w_n^i) =
 \sum_{j=1}^{n_i} \mathsf{onehot}(w_j),\] and assume that \[
-y_i \sim \Bern(p_i) \quad p_i = \sigma(Wx_i),
+y_i \sim \Bern(p_i) \quad p_i = \sigma(\bm W\bm x_i),
 \]
 for the sigmoid function \[
 \sigma(t) = \frac{1}{1+e^{-t}}. 
@@ -186,12 +185,59 @@ embeddings, it suffers a limitation from the bag-of-words construction. Because
 the order of words is not taken into account, the sentences ``it bad, not good''
 and ``it good, not bad'' cannot be distinguished. 
 
+To this end, we employ a one-dimensional convolution of the word embeddings.
+That is, we take a sliding window with size either 3, 4, or 5 over time, then
+take a linear transform to generate features for each location of the sliding
+window. We generate 100 features per window size.
+
+Then, we max pool over time to get a fixed number of features for each sentence.
+These features then get passed through a ReLU and a dropout with $p=.5$ to get a
+hidden layer than finally gets passed through a linear transformation and a
+softmax to get our probabilities for each label.
+
+The procedure is summarized in \cref{fig:convnet}.
+
 \begin{figure}[htb]
 \centering
 \includegraphics[width=\textwidth]{figs/convnet.png}
 \caption{Convolutional Neural Network Model}
 \label{fig:convnet}
 \end{figure}
+
+\subsection{Ensemble}
+\label{subsec:ensemble}
+
+For our generalizations, we create an ensemble of models in attempt to leverage
+the strengths of each. We construct our final ensemble from the
+\nameref{subsec:nb}, \nameref{subsec:logistic}, and \nameref{subsec:convnet}
+models. We pick these since they are our three highest-performing models and we
+expect each to capture something slightly different.
+
+We depict a pair-plot of the predictions of each of the three models in
+\cref{fig:corrs} to highlight that while the models do have a high degree of
+concordance, they are also not making exactly the same predictions, and so could
+benefit from an ensemble.
+
+To implement the ensemble, we create a weighted average of the probability
+predictions of each model. We enforce that the weights are positive and sum to 1
+by optimizing over log-space weights and training these hyper-parameters over
+our validation set. We display the weights that result from 20 epochs of
+training in \cref{tab:ensemble}
+
+\begin{table}
+\centering
+\begin{tabular}{ll}
+\toprule
+Model & Weight \\
+\midrule
+\nameref{subsec:nb}  & 0.1755 \\
+\nameref{subsec:logistic} & 0.3895 \\
+\nameref{subsec:convnet} & 0.4349 \\
+\bottomrule
+\end{tabular}
+\caption{Weights on each model for ensemble}
+\label{tab:ensemble}
+\end{table}
 
 % \section{Model and Algorithms---Old}
 % 
@@ -260,10 +306,6 @@ and ``it good, not bad'' cannot be distinguished.
 % \end{itemize}
 % 
 
-\subsection{Ensemble}
-\label{sub:ensemble}
-
-
 \begin{figure}[tb]
   \centering
   \includegraphics[width=\textwidth]{corrs.pdf}
@@ -271,23 +313,45 @@ and ``it good, not bad'' cannot be distinguished.
   the validation set. We plot $\text{logit}$ of the probabilities that a
   sentence is negative sentiment against each other (we clip $\pm \infty$
   values in logit-space at $\pm 10$).}
-  \label{fig:figure1}
+  \label{fig:corrs}
 \end{figure}
 
+\subsection{Ensemble voting}
+\label{subsec:voting}
+
+In addition, we also implement an even simpler form of ensembling. Instead of
+averaging each model's output probability, we can instead give each model a
+``vote'' either for positive or negative sentiment (based on whether the model
+predicts a probability  below or above 0.5). Then, of the three models'
+predictions, we pick the prediction that happens at least two times (the
+majority).
+
+While this mechanism is less complex, we expect it to be more robust to strong
+convictions from any given model, thus insulating the ensemble from
+overconfidence. 
+
 \section{Experiments}
+\label{sec:experiment}
+We show the accuracy and average loss (under the cross entropy criterion) for
+all models in \Cref{tab:results}. We see that the ensemble models seem to
+generally outperform non-ensemble models in validation accuracy, and
+bag-of-words based models seem to outperform embedding-based models. In
+particular, it is somewhat surprising that the CBOW-embedding neural network
+performs poorly even on the training set, potentially due to a small parameter
+size. On the other hand, the generalization gap for the other models is
+substantial. 
+% Finally we end with the experimental section. Each assignment will make clear
+% the main experiments and baselines that you should run. For these experiments
+% you should present a main results table. Here we give a sample
+% Table~\ref{tab:results}. In addition to these results you should describe in
+% words what the table shows and the relative performance of the models.
 
-Finally we end with the experimental section. Each assignment will make clear
-the main experiments and baselines that you should run. For these experiments
-you should present a main results table. Here we give a sample
-Table~\ref{tab:results}. In addition to these results you should describe in
-words what the table shows and the relative performance of the models.
-
-Besides the main results we will also ask you to present other results
-comparing particular aspects of the models. For instance, for word
-embedding experiments, we may ask you to show a chart of the projected
-word vectors. This experiment will lead to something like
-Figure~\ref{fig:clusters}. This should also be described within the
-body of the text itself.
+% Besides the main results we will also ask you to present other results
+% comparing particular aspects of the models. For instance, for word
+% embedding experiments, we may ask you to show a chart of the projected
+% word vectors. This experiment will lead to something like
+% Figure~\ref{fig:clusters}. This should also be described within the
+% body of the text itself.
 
 \begin{landscape}
   \begin{table}[t]
@@ -322,10 +386,23 @@ cannot be computed since model does not output likelihood.}
 
 
 \section{Conclusion}
+We implemented \nameref{subsec:nb}, \nameref{subsec:cbow}, 
+\nameref{subsec:logistic}, and \nameref{subsec:convnet} and performed
+experiments in \Cref{sec:experiment}. We also implemented ensemble classifiers
+that seek to leverage model averaging in achieving superior error rates. We find
+that Naive Bayes, despite its simplicity, performs quite well compared to
+deep learning-based models, and ensembles models do effectively leverage the
+imperfect correlation in model predictions to deliver superior results. In our
+experiments, we have noticed that adding depth to neural network-based models do
+not necessarily increase the classification rate on the validation set due to
+overfitting, and we have found that combatting overfitting is quite challenging,
+despite tools like penalized likelihood regularization and dropout. Moreover, it
+is somewhat perplexing that \nameref{subsec:cbow} and \nameref{subsec:convnet},
+which both take input from the \textsf{word2vec} embedding developed by 
+\cite{mikolov2013efficient} do not outperform conventional bag-of-words models,
+since the word embeddings are supposed to capture semantic relationships between
+different words. 
 
-End the write-up with a very short recap of the main experiments and the main
-results. Describe any challenges you may have faced, and what could have been
-improved in the model.
 
 \bibliographystyle{apalike}
 \bibliography{writeup}
