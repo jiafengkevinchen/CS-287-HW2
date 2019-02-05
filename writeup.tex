@@ -126,10 +126,10 @@ where $N_+$ and $N_-$ are respectively the number of positive sentences and nega
 \subsection{Logistic Regression}
 \label{subsec:logistic}
 
-In this model,  we consider the bag-of-words transform \[x_i = \phi
+In this model,  we consider the bag-of-words transform \[\bm x_i = \phi
 (w_1^i,\ldots,w_n^i) =
 \sum_{j=1}^{n_i} \mathsf{onehot}(w_j),\] and assume that \[
-y_i \sim \Bern(p_i) \quad p_i = \sigma(Wx_i),
+y_i \sim \Bern(p_i) \quad p_i = \sigma(\bm W\bm x_i),
 \]
 for the sigmoid function \[
 \sigma(t) = \frac{1}{1+e^{-t}}. 
@@ -268,23 +268,30 @@ and ``it good, not bad'' cannot be distinguished.
   the validation set. We plot $\text{logit}$ of the probabilities that a
   sentence is negative sentiment against each other (we clip $\pm \infty$
   values in logit-space at $\pm 10$).}
-  \label{fig:figure1}
+  \label{fig:corrs}
 \end{figure}
 
 \section{Experiments}
+We show the accuracy and average loss (under the cross entropy criterion) for
+all models in \Cref{tab:results}. We see that the ensemble models seem to
+generally outperform non-ensemble models in validation accuracy, and
+bag-of-words based models seem to outperform embedding-based models. In
+particular, it is somewhat surprising that the CBOW-embedding neural network
+performs poorly even on the training set, potentially due to a small parameter
+size. On the other hand, the generalization gap for the other models is
+substantial. 
+% Finally we end with the experimental section. Each assignment will make clear
+% the main experiments and baselines that you should run. For these experiments
+% you should present a main results table. Here we give a sample
+% Table~\ref{tab:results}. In addition to these results you should describe in
+% words what the table shows and the relative performance of the models.
 
-Finally we end with the experimental section. Each assignment will make clear
-the main experiments and baselines that you should run. For these experiments
-you should present a main results table. Here we give a sample
-Table~\ref{tab:results}. In addition to these results you should describe in
-words what the table shows and the relative performance of the models.
-
-Besides the main results we will also ask you to present other results
-comparing particular aspects of the models. For instance, for word
-embedding experiments, we may ask you to show a chart of the projected
-word vectors. This experiment will lead to something like
-Figure~\ref{fig:clusters}. This should also be described within the
-body of the text itself.
+% Besides the main results we will also ask you to present other results
+% comparing particular aspects of the models. For instance, for word
+% embedding experiments, we may ask you to show a chart of the projected
+% word vectors. This experiment will lead to something like
+% Figure~\ref{fig:clusters}. This should also be described within the
+% body of the text itself.
 
 \begin{landscape}
   \begin{table}[t]
