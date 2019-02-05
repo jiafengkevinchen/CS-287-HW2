@@ -106,20 +106,19 @@ models.
 
 As we alluded to earlier, we can treat our prediction problem as probabilistic. We are interested in the probability of
 \[
-  p(y_i \mid \bm w) = \frac{p(\bm w \mid y_i) p(y_i)}{p(\bm w)}
+  p(y_i \mid w_1^i, \dots, w_n^i) = \frac{p(w_1^i, \dots, w_n^i \mid y_i) p(y_i)}{p(w_1^i, \dots, w_n^i)}
 \]
 which is given by Bayes' rule. The Bayesian approach is formulated as follows:
-\newcommand{\bdp}{\mathbf{p}}
-\newcommand{\bdq}{\mathbf{q}}
+\newcommand{\bdm}{\bm{m}}
 \begin{itemize}
-  \item We first assign pseudo-counts to each word that act as priors in the Bayesian framework. This results in $\bdp, \bdq \in \mathbb{R}^{|\mcV|}$, representing the counts of words in positive/negative sentences. In our model, we initialized both to be vector of ones.
-  \item We train the model by updating $\bdp$ and $\bdq$. We increment $p_i$ (resp. $q_i$) by the occurences of word $w_i$ in positive (resp. negative) sentences.
+  \item We first assign pseudo-counts to each word that act as priors in the Bayesian framework. This results in $\bdm^+, \bdm^- \in \mathbb{R}^{|\mcV|}$, representing the counts of words in positive/negative sentences. In our model, we initialized both to be vector of ones.
+  \item We train the model by updating $\bdm^+$ and $\bdm^-$. We increment $m^+_i$ (resp. $m^-_i$) by the number of occurences of word $w_i$ in positive (resp. negative) sentences.
 \end{itemize}
 The predicted probabilities for a sentence with features $\bm x_i$ is given by softmaxing over
 \[
   \begin{bmatrix}
-    \log \left( \frac{\bdp}{\|\bdp\|_1} \right)^T \bm x_i + \log \left( \frac{N_+}{N} \right)\\
-    \log \left( \frac{\bdq}{\|\bdq\|_1} \right)^T \bm x_i + \log \left( \frac{N_-}{N} \right)
+    \log \left( \frac{\bdm^+}{\|\bdm^+\|_1} \right)^T \bm x_i + \log \left( \frac{N_+}{N} \right)\\
+    \log \left( \frac{\bdm^-}{\|\bdm^-\|_1} \right)^T \bm x_i + \log \left( \frac{N_-}{N} \right)
   \end{bmatrix}
 \]
 where $N_+$ and $N_-$ are respectively the number of positive sentences and negative sentences in the training set and $N = N_+ + N_-$. In addition, $\bm x_i$ is the max-over-time pooling of one-hot encoding matrix.
