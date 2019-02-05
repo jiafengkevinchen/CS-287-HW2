@@ -19,22 +19,25 @@ Francisco Rivera$^{*}$}
 \maketitle{}
 \section{Introduction}
 
-This note lays out our expectation for a homework submission in
-\textit{CS287: Statistical Natural Language Processing}. While you do
-not have to follow this template to the letter, we do expect that
-write-ups have a very clear structure and cover all the elements
-described in this note. With this in mind, the burden is on the
-presenter to demonstrate why deviations from the standard are
-necessary.
+% This note lays out our expectation for a homework submission in
+% \textit{CS287: Statistical Natural Language Processing}. While you do
+% not have to follow this template to the letter, we do expect that
+% write-ups have a very clear structure and cover all the elements
+% described in this note. With this in mind, the burden is on the
+% presenter to demonstrate why deviations from the standard are
+% necessary.
 
-All write-ups should include a short introduction. In this section you
-should summarize the underlying problem in high-level language and
-describe the extensions that you have decided to propose in your
-implementation. When you describe these extensions you should
-carefully cite the papers of interest. For instance, it will often be
-useful to cite the work seen in class
-\citep{murphy2012machine}. Alternatively, you can also cite papers
-inline, for instance the work of \citet{berger1996maximum}.
+% All write-ups should include a short introduction. In this section you
+% should summarize the underlying problem in high-level language and
+% describe the extensions that you have decided to propose in your
+% implementation. When you describe these extensions you should
+% carefully cite the papers of interest. For instance, it will often be
+% useful to cite the work seen in class
+% \citep{murphy2012machine}. Alternatively, you can also cite papers
+% inline, for instance the work of \citet{berger1996maximum}.
+
+
+In this write-up, our main focus is on building classifiers of sentiment in sentences. We implemented naive Bayes unigram classifier (\cite{wang2012baselines}), logistic regression over word types, a continuous bag-of-word neural network with embeddings (\cite{mikolov2013efficient}) and a convolutional neural network (\cite{kim2014convolutional}). In addition, we experimented different ensemble methods and made improvements.
 
 
 \section{Problem Description---Old}
