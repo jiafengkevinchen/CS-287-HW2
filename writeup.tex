@@ -4,6 +4,7 @@
 \usepackage{common}
 \usepackage{macros}
 \usepackage{nameref}
+\usepackage{pdflscape}
 
 \title{HW1: Classification}
 \author{Jiafeng Chen \and Yufeng Ling \and Francisco Rivera}
@@ -73,12 +74,14 @@ sentiment (a binary classification). These predictions can be made in a
 probabilistic fashion by writing $y_i$ as the event that the $i$th sentence is
 positive sentiment, and calculating $p(y_i)$.
 
-Sentences are themselves sequences of words $w \in \mcV$ in some vocabulary
+Sentences\footnote{We use \emph{sentences} to mean a unit of data, which can in
+principle be multiple grammatical sentences.} are themselves sequences of words
+$w \in \mcV$ in some vocabulary
 $\mcV$. In particular, there will be two special words, $w_\text{unk},\,
 w_\text{pad} \in \mcV$ which represent an unknown word and a padding unit
 respectively; we address their significance later. A particular sequence of
-words $w_1, \ldots, w_n$ need not have a specific length $n$, which varies
-across sentences.
+words $w_1, \ldots, w_n$ need not have a fixed length, which varies
+across sentences. 
 
 We represent words in two main ways. The first is as a one-hot encoded vector
 $\boldv \in \{0,1\}^{|\mcV|}$. This representation is useful for the
@@ -99,6 +102,21 @@ As we alluded to earlier, we can treat our prediction problem as probabilistic.
 
 \subsection{Logistic Regression}
 \label{subsec:logistic}
+
+In this model,  we consider the bag-of-words transform \[x_i = \phi
+(w_1^i,\ldots,w_n^i) =
+\sum_{j=1}^{n_i} \mathsf{onehot}(w_j),\] and assume that \[
+y_i \sim \Bern(p_i) \quad p_i = \sigma(Wx_i),
+\]
+for the sigmoid function \[
+\sigma(t) = \frac{1}{1+e^{-t}}. 
+\]
+The model is estimated via maximum likelihood over parameter matrix $W$. We
+maximize log likelihood via the Adam optimizer in a batched gradient descent
+setting, with a learning rate of $10^{-4}$
+and weight decay of $10^{-4}$ for 20 epochs. 
+
+
 
 \subsection{Continuous Bag of Words}
 \label{subsec:cbow}
@@ -188,23 +206,30 @@ word vectors. This experiment will lead to something like
 Figure~\ref{fig:clusters}. This should also be described within the
 body of the text itself.
 
-
-\begin{table}[h]
+\begin{landscape}
+  \begin{table}[t]
 \centering
-\begin{tabular}{llr}
- \toprule
- Model &  & Acc. \\
- \midrule
- \textsc{Baseline 1} & & 0.45\\
- \textsc{Baseline 2} & & 2.59 \\
- \textsc{Model 1} & & 10.59  \\
- \textsc{Model 2} & &13.42 \\
- \textsc{Model 3} & & 7.49\\
- \bottomrule
+\begin{tabular}{rcccc}
+\toprule
+{} & Training Accuracy &  Training Average Loss & Validation Accuracy &  Validation Average Loss \\
+\midrule
+Naive Bayes    &             95.0\% &                 0.0139 &               79.4\% &                   0.0504 \\
+Logistic       &             98.8\% &                 0.0131 &               78.2\% &                   0.0487 \\
+Embedding NN   &             75.5\% &                 0.0497 &               70.8\% &                   0.0605 \\
+CNN            &             98.3\% &                 0.0122 &               76.5\% &                   0.0523 \\
+Ensemble       &             98.5\% &                 0.0121 &               80.3\% &                   0.0429 \\
+Ensemble-votes &             98.7\% &                    --- &               80.2\% &                      --- \\
+\bottomrule
 \end{tabular}
-\caption{\label{tab:results} Table with the main results.}
+\caption{\label{tab:results} Accuracy and average loss (under cross-entropy loss
+function) for models considered. Note that for Ensemble, the ensemble weights
+are
+trained over the validation set and for the model Ensemble-votes, the loss
+cannot be computed since model does not output likelihood.}
 \end{table}
 
+
+\end{landscape}
 
 \begin{figure}
   \centering
