@@ -1,6 +1,8 @@
+from tqdm import tqdm_notebook as tqdm
+
 def train_model(
     model, loss_fn=None, optimizer=None, train_iter=None,
-    val_iter=None, num_epochs=5, writer=None):
+    val_iter=None, num_epochs=5, writer=None, callback=None, inner_callback=None):
     """
     TODO
     """
@@ -20,6 +22,8 @@ def train_model(
                 train_loss += loss.item()
 
                 total += batch.batch_size
+                if inner_callback is not None:
+                    inner_callback(**locals())
             if writer is not None:
                 writer.add_scalar('training_loss', train_loss / total, epoch)
             if val_iter is not None:
@@ -30,6 +34,8 @@ def train_model(
                     val_loss += loss.item()
                 if writer is not None:
                     writer.add_scalar('validation_loss', val_loss / total, epoch)
+            if callback is not None:
+                callback(**locals())
 
 
 
