@@ -1,20 +1,26 @@
-from tqdm import tqdm_notebook as tqdm
+
 
 def train_model(
     model, loss_fn=None, optimizer=None, train_iter=None,
-    val_iter=None, num_epochs=5, writer=None, callback=None, inner_callback=None):
+    val_iter=None, num_epochs=5, writer=None, callback=None, 
+    inner_callback=None, progress_bar=False):
     """
     TODO
     """
-    if hasattr(model, 'train'):
-        model.train()
+    
+    if hasattr(model, '__train__'):
+        model.__train__()
     elif loss_fn is None or optimizer is None:
         raise ValueError
     else:
         for epoch in range(num_epochs):
             train_loss = 0
             total = 0
-            for batch in train_iter:
+            if not progress_bar:
+                tqdm = lambda x : x
+            else:
+                from tqdm import tqdm_notebook as tqdm
+            for batch in tqdm(train_iter):
                 optimizer.zero_grad()
                 loss = loss_fn(model, batch)
                 loss.backward()
