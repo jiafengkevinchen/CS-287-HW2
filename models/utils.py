@@ -35,7 +35,7 @@ def train_model(
             if val_iter is not None:
                 val_loss = 0
                 total = 0
-                for batch in train_iter:
+                for batch in val_iter:
                     loss = loss_fn(model, batch)
                     val_loss += loss.item()
                 if writer is not None:
