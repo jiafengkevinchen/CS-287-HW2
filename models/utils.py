@@ -49,6 +49,8 @@ def tensor_to_text(t, TEXT):
     return ' '.join([TEXT.vocab.itos[i] for i in t])
 
 
-
-
-
+def count_parameters(model):
+    total = 0
+    for p in model.parameters():
+        total += p.numel()   
+    return total

@@ -5,6 +5,7 @@
 *out
 *gz
 *swp
+*pt
 .DS_Store
 .ipynb_checkpoints/*
 models/__pycache__/*
