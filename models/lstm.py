@@ -25,3 +25,9 @@ class LSTM(nnn.Module):
         log_probs = self.w(hidden_states)
         
         return log_probs
+
+    
+ce_loss = nnn.CrossEntropyLoss().spec('batch')
+
+def lstm_loss(model, batch):
+    return ce_loss(model(batch.text), batch.target)
