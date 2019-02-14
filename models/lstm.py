@@ -1,7 +1,7 @@
 from namedtensor.nn import nn as nnn
 
 class LSTM(nnn.Module):
-    def __init__(self, TEXT, embedding_dim=100, hidden_dim=150):
+    def __init__(self, TEXT, embedding_dim=100, hidden_dim=150, dropout=0):
         super().__init__()
         
         pad_idx = TEXT.vocab.stoi['<pad>']
@@ -12,7 +12,8 @@ class LSTM(nnn.Module):
         
         self.lstm = nnn.LSTM(input_size=embedding_dim, 
                              hidden_size=hidden_dim, 
-                             num_layers=1) \
+                             num_layers=1,
+                             dropout=dropout) \
                         .spec("embedding", "seqlen")
         
         self.w = nnn.Linear(in_features=hidden_dim, 
