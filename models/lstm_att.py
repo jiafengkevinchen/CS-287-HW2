@@ -27,6 +27,8 @@ class LSTM_att(nnn.Module):
         self.w = nnn.Linear(in_features=hidden_dim * 2,
                             out_features=len(TEXT.vocab)) \
                         .spec("embedding", "classes")
+        self.w_attn = (nnn.Linear(in_features=hidden_dim, out_features=hidden_dim)
+            .spec("embedding", "embedding"))
 
 
 
@@ -40,7 +42,7 @@ class LSTM_att(nnn.Module):
         for t in range(sentence_len):
             ht = H[{'seqlen':t}]
             context_mat = H[{'seqlen':slice(0,t)}]
-            a_weights = (ht * context_mat).sum('embedding').softmax("seqlen")
+            a_weights = (ht * self.w_attn(context_mat)).sum('embedding').softmax("seqlen")
             contexts.append((a_weights * context_mat).sum('seqlen'))
         contexts = ntorch.stack(contexts, 'seqlen')
         joint = ntorch.cat([contexts, H], dim='embedding')
