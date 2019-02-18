@@ -4,7 +4,7 @@ import base64
 
 from IPython.paths import get_ipython_dir
 from urllib.request import urlretrieve
-import ntorch
+from namedtensor import ntorch
 
 def configure_azure():
     API_KEY = b'aHR0cHM6Ly90aW55dXJsLmNvbS95NDg4YjdqOA=='
