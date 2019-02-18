@@ -35,13 +35,14 @@ class LSTM_att(nnn.Module):
         H, _ = self.lstm(embedded)
 
         sentence_len = H.size('seqlen')
-        contexts = ntorch.zeros(*H.shape.values(), names=list(H.shape.keys())).cuda()
+        # contexts = ntorch.zeros(*H.shape.values(), names=list(H.shape.keys())).cuda()
+        contexts = []
         for t in range(sentence_len):
             ht = H[{'seqlen':t}]
             context_mat = H[{'seqlen':slice(0,t)}]
             a_weights = (ht * context_mat).sum('embedding').softmax("seqlen")
-            contexts[{'seqlen' : t}] = (a_weights * context_mat).sum('seqlen')
-
+            contexts.append((a_weights * context_mat).sum('seqlen'))
+        contexts = ntorch.stack(contexts, 'seqlen')
         joint = ntorch.cat([contexts, H], dim='embedding')
         log_probs = self.w(joint)
         return log_probs
