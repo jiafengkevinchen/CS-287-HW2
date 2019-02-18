@@ -4,6 +4,7 @@ import base64
 
 from IPython.paths import get_ipython_dir
 from urllib.request import urlretrieve
+import ntorch
 
 def configure_azure():
     API_KEY = b'aHR0cHM6Ly90aW55dXJsLmNvbS95NDg4YjdqOA=='
@@ -19,12 +20,12 @@ def configure_azure():
 
 def train_model(
     model, loss_fn=None, optimizer=None, train_iter=None,
-    val_iter=None, num_epochs=5, writer=None, callback=None, 
+    val_iter=None, num_epochs=5, writer=None, callback=None,
     inner_callback=None, progress_bar=False):
     """
     TODO
     """
-    
+
     if hasattr(model, '__train__'):
         model.__train__()
     elif loss_fn is None or optimizer is None:
@@ -67,7 +68,20 @@ def tensor_to_text(t, TEXT):
 def count_parameters(model):
     total = 0
     for p in model.parameters():
-        total += p.numel()   
+        total += p.numel()
     return total
+
+
+def test_model(model, test_iter, filename, TEXT):
+    row_num = 0
+    with open(filename, "w") as fout:
+        print('id,word', file=fout)
+        for batch in test_iter:
+            _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}],
+                                        "classes", 20)
+            for row in best_words.cpu().numpy():
+                row_num += 1
+                print(f'{row_num},{tensor_to_text(row, TEXT)}', file=fout)
+
 
 configure_azure()
