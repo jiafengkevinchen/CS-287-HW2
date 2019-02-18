@@ -25,7 +25,7 @@ class LSTM(nnn.Module):
 
         self.w = nnn.Linear(in_features=hidden_dim,
                             out_features=len(TEXT.vocab)) \
-                        .spec("embedding", "vocab")
+                        .spec("embedding", "classes")
 
     def forward(self, batch_text):
         embedded = self.embed(batch_text)

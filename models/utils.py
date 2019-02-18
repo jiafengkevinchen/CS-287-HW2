@@ -71,7 +71,7 @@ def kaggle_loss(model, batch):
     _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}], 'vocab', 20)
     last_target = batch.target[{'seqlen': -1}]
     is_correct = best_words == last_target
-    scores = torch.cumsum(is_correct.values, 1).float() / (1 + torch.arange(20)).float().cuda()
+    scores = is_correct.values.float() / (1 + torch.arange(20)).float().cuda()
     return scores.sum()
 
 
