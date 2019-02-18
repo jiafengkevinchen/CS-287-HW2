@@ -72,13 +72,13 @@ def count_parameters(model):
     return total
 
 
-def test_model(model, test_iter, filename, TEXT):
+def test_model(model, test_iter, filename, TEXT, output_name="classes"):
     row_num = 0
     with open(filename, "w") as fout:
         print('id,word', file=fout)
         for batch in test_iter:
             _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}],
-                                        "classes", 20)
+                                        output_name, 20)
             for row in best_words.cpu().numpy():
                 row_num += 1
                 print(f'{row_num},{tensor_to_text(row, TEXT)}', file=fout)
