@@ -48,20 +48,21 @@ class Trigram:
         trigram = sp.FloatTensor(V,V,V)
 
         for batch in tqdm(train_iter):
-            i = batch.text.flatten().unsqueeze(0)
+            
+            i = batch.text.values.flatten().unsqueeze(0)
             unigram_counts = sp.FloatTensor(
                  i, torch.ones(i.shape[1]), torch.Size([V])
             )
 
             unigram += unigram_counts
 
-            ii = torch.stack([batch.text[:-1,:], batch.text[1:, :]]).view(2, -1)
+            ii = torch.stack([batch.text.values[:-1,:], batch.text.values[1:, :]]).view(2, -1)
             bigram_counts = sp.FloatTensor(
                  ii, torch.ones(ii.shape[-1]), torch.Size([V, V])
             )
             bigram += bigram_counts
 
-            iii = torch.stack([batch.text[:-2,:], batch.text[1:-1, :], batch.text[2:, :]]).view(3, -1)
+            iii = torch.stack([batch.text.values[:-2,:], batch.text.values[1:-1, :], batch.text.values[2:, :]]).view(3, -1)
             trigram_counts = sp.FloatTensor(
                  iii, torch.ones(iii.shape[-1]), torch.Size([V, V, V])
             )
@@ -114,12 +115,12 @@ class Trigram:
         return output_batch
 
     def __call__(self, batch_text):
-        packaged = torch.stack([batch_text[:-1,:], batch_text[1:, :]]).view(2, -1).t()
+        packaged = torch.stack([batch_text.values[:-1,:], batch_text.values[1:, :]]).view(2, -1).t()
         return self.predict(packaged)
 
 cross_entropy_loss = nn.CrossEntropyLoss()
 def trigram_loss_fn(model, batch):
-    pred = model(batch.text)
+    pred = model(batch.text.values)
     labels = batch.target[1:,:].flatten()
     loss = cross_entropy_loss(pred, labels)
     return loss

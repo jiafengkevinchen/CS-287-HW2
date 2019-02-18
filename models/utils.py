@@ -81,7 +81,7 @@ def test_model(model, input_file, filename, TEXT, output_name="classes"):
         with open(input_file, 'r') as fin:
             for line in tqdm(fin.readlines()):
                 batch_text = NamedTensor(
-                    Tensor([TEXT.vocab.stoi[s] for s in line.split(' ')]).unsqueeze(1).long(),
+                    Tensor([TEXT.vocab.stoi[s] for s in line.split(' ')[:-1]]).unsqueeze(1).long(),
                     names=('seqlen', 'batch')
                 )
                 _, best_words = ntorch.topk(model(batch_text)[{'seqlen': -1}],
@@ -91,4 +91,4 @@ def test_model(model, input_file, filename, TEXT, output_name="classes"):
                     print(f'{row_num},{tensor_to_text(row, TEXT)}', file=fout)
 
 
-configure_azure()
+# configure_azure()
