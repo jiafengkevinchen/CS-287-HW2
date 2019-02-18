@@ -35,7 +35,7 @@ class LSTM_att(nnn.Module):
         H, _ = self.lstm(embedded)
 
         sentence_len = H.size('seqlen')
-        contexts = ntorch.zeros(*H.shape.values(), names=list(H.shape.keys()))
+        contexts = ntorch.zeros(*H.shape.values(), names=list(H.shape.keys())).cuda()
         for t in range(sentence_len):
             ht = H[{'seqlen':t}]
             context_mat = H[{'seqlen':slice(0,t)}]
