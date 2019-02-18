@@ -1,7 +1,7 @@
 from namedtensor.nn import nn as nnn
 from namedtensor import ntorch
 
-class LSTM(nnn.Module):
+class LSTM_att(nnn.Module):
     """
     LSTM implementation for sentence completion.
     """
