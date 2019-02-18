@@ -2,6 +2,7 @@ import os
 import subprocess
 import base64
 import torch
+import pandas as pd
 
 from IPython.paths import get_ipython_dir
 from urllib.request import urlretrieve
@@ -64,14 +65,19 @@ def train_model(
             if callback is not None:
                 callback(**locals())
 
+
+
 def tensor_to_text(t, TEXT):
     return ' '.join([TEXT.vocab.itos[i] for i in t])
 
-def kaggle_loss(model, batch):
-    _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}], 'vocab', 20)
+def kaggle_loss(model, batch, cuda=True):
+    _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}], 'classes', 20)
     last_target = batch.target[{'seqlen': -1}]
     is_correct = best_words == last_target
-    scores = is_correct.values.float() / (1 + torch.arange(20)).float().cuda()
+    if cuda:
+        scores = is_correct.values.float() / (1 + torch.arange(20)).float().cuda()
+    else:
+        scores = is_correct.values.float() / (1 + torch.arange(20)).float()
     return scores.sum()
 
 
@@ -97,6 +103,25 @@ def test_model(model, input_file, filename, TEXT, output_name="classes"):
                 for row in best_words.cpu().numpy():
                     row_num += 1
                     print(f'{row_num},{tensor_to_text(row, TEXT)}', file=fout)
+
+
+def evaluate_model(val_iter, args, **models):
+    results = []
+    for i, batch in enumerate(tqdm(val_iter)):
+        for name in models:
+            model, loss_fn = models[name]
+            batch_size = batch.batch_size
+            loss = loss_fn(model, batch).item()
+            map_ = kaggle_loss(model, batch, **args).item()
+            results.append({
+                'batch_id' : i,
+                'batch_size': batch_size,
+                'model_name':name,
+                'loss': loss, 'map' : map_ / batch_size})
+    return pd.DataFrame(results)
+
+
+
 
 
 configure_azure()
