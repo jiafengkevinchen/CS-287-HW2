@@ -1,6 +1,7 @@
 import os
 import subprocess
 import base64
+import torch
 
 from IPython.paths import get_ipython_dir
 from urllib.request import urlretrieve
@@ -67,7 +68,7 @@ def tensor_to_text(t, TEXT):
     return ' '.join([TEXT.vocab.itos[i] for i in t])
 
 def kaggle_loss(model, batch):
-     _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}], 'vocab', 20)
+    _, best_words = ntorch.topk(model(batch.text)[{'seqlen': -1}], 'vocab', 20)
     last_target = batch.target[{'seqlen': -1}]
     is_correct = best_words == last_target
     scores = torch.cumsum(is_correct.values, 1).float() / (1 + torch.arange(20)).float()
@@ -98,4 +99,4 @@ def test_model(model, input_file, filename, TEXT, output_name="classes"):
                     print(f'{row_num},{tensor_to_text(row, TEXT)}', file=fout)
 
 
-# configure_azure()
+configure_azure()
