@@ -30,7 +30,7 @@ class LSTM_att(nnn.Module):
                  hidden_dim=150,
                  num_layers=1,
                  dropout=0,
-                 nn_dropout=.5
+                 nn_dropout=.5,
                  **kwargs):
         super().__init__()
 
