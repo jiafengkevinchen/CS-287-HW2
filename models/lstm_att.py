@@ -30,6 +30,7 @@ class LSTM_att(nnn.Module):
                  hidden_dim=150,
                  num_layers=1,
                  dropout=0,
+                 nn_dropout=.5
                  **kwargs):
         super().__init__()
 
@@ -62,17 +63,18 @@ class LSTM_att(nnn.Module):
         self.w = nnn.Linear(in_features=hidden_dim * h_len,
                             out_features=len(TEXT.vocab)) \
                         .spec("embedding", "classes")
+        self.dropout = nnn.Dropout(dropout)
 
 
     def forward(self, batch_text):
-        embedded = self.embed(batch_text)
+        embedded = self.dropout(self.embed(batch_text))
         H, _ = self.lstm(embedded)
         joint = ntorch.cat([H, self.attn(H)] + [self.attn(l(H)) for l in self.lins], "embedding")
-        log_probs = self.w(joint)
+        log_probs = self.w(self.dropout(joint))
         return log_probs
 
 
-ce_loss = nnn.CrossEntropyLoss().spec('batch')
+ce_loss = nnn.CrossEntropyLoss().spec('classes')
 
 def lstm_loss(model, batch):
     """
