@@ -63,7 +63,7 @@ class LSTM_att(nnn.Module):
         self.w = nnn.Linear(in_features=hidden_dim * h_len,
                             out_features=len(TEXT.vocab)) \
                         .spec("embedding", "classes")
-        self.dropout = nnn.Dropout(dropout)
+        self.dropout = nnn.Dropout(nn_dropout)
 
 
     def forward(self, batch_text):
