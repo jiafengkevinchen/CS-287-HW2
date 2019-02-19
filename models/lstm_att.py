@@ -1,5 +1,25 @@
 from namedtensor.nn import nn as nnn
 from namedtensor import ntorch
+import torch
+from namedtensor import NamedTensor
+from numpy import inf
+
+
+class MaskedAttention(nnn.Module):
+    def __init__(self, cuda=True):
+        super().__init__()
+        self.cuda_enabled = cuda
+        
+    def forward(self, hidden):
+        dotted = (hidden * hidden.rename("seqlen", "seqlen2")).sum("embedding")
+        mask = torch.arange(hidden.size('seqlen'))
+        mask = (NamedTensor(mask, names='seqlen') < NamedTensor(mask, names='seqlen2')).float()
+        mask[mask.byte()] = -inf 
+        if self.cuda_enabled:
+            attn = ((dotted + mask.cuda()) / (hidden.size("embedding") ** .5)).softmax('seqlen2')
+        else:
+            attn = ((dotted + mask) / (hidden.size("embedding") ** .5)).softmax('seqlen2')
+        return (attn * hidden.rename('seqlen', 'seqlen2')).sum('seqlen2')
 
 class LSTM_att(nnn.Module):
     """
@@ -9,7 +29,8 @@ class LSTM_att(nnn.Module):
                  embedding_dim=100,
                  hidden_dim=150,
                  num_layers=1,
-                 dropout=0):
+                 dropout=0,
+                 **kwargs):
         super().__init__()
 
         pad_idx = TEXT.vocab.stoi['<pad>']
@@ -24,28 +45,29 @@ class LSTM_att(nnn.Module):
                              dropout=dropout) \
                         .spec("embedding", "seqlen")
 
-        self.w = nnn.Linear(in_features=hidden_dim * 2,
+        
+        self.w1 = (nnn.Linear(in_features=hidden_dim, out_features=hidden_dim)
+                   .spec("embedding", "embedding"))
+        self.w2 = (nnn.Linear(in_features=hidden_dim, out_features=hidden_dim)
+                   .spec("embedding", "embedding"))
+        self.w3 = (nnn.Linear(in_features=hidden_dim, out_features=hidden_dim)
+                   .spec("embedding", "embedding"))
+        self.w4 = (nnn.Linear(in_features=hidden_dim, out_features=hidden_dim)
+                   .spec("embedding", "embedding"))
+        
+        self.lins = [self.w1, self.w2, self.w3, self.w4]
+        self.attn = MaskedAttention(**kwargs)
+        
+        h_len = len(self.lins) + 2
+        self.w = nnn.Linear(in_features=hidden_dim * h_len,
                             out_features=len(TEXT.vocab)) \
                         .spec("embedding", "classes")
-        self.w_attn = (nnn.Linear(in_features=hidden_dim, out_features=hidden_dim)
-            .spec("embedding", "embedding"))
-
 
 
     def forward(self, batch_text):
         embedded = self.embed(batch_text)
         H, _ = self.lstm(embedded)
-
-        sentence_len = H.size('seqlen')
-        # contexts = ntorch.zeros(*H.shape.values(), names=list(H.shape.keys())).cuda()
-        contexts = []
-        for t in range(sentence_len):
-            ht = H[{'seqlen':t}]
-            context_mat = H[{'seqlen':slice(0,t)}]
-            a_weights = (ht * self.w_attn(context_mat)).sum('embedding').softmax("seqlen")
-            contexts.append((a_weights * context_mat).sum('seqlen'))
-        contexts = ntorch.stack(contexts, 'seqlen')
-        joint = ntorch.cat([contexts, H], dim='embedding')
+        joint = ntorch.cat([H, self.attn(H)] + [self.attn(l(H)) for l in self.lins], "embedding")
         log_probs = self.w(joint)
         return log_probs
 
