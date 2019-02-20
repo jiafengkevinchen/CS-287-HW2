@@ -21,10 +21,28 @@ Francisco Rivera}
 In this write-up, our main focus is language modeling. That is, given words in a
 sentence, can we predict the word that follows? We implemented a trigram model,
 a embedding neural network model, an LSTM, and a few extensions---including
-warm-starting from pretrained embeddings, ensemble models, and multi-head
+warm-starting from pre-trained embeddings, ensemble models, and multi-head
 attention decoder. 
 
 \section{Problem Description}
+
+The focus of the problem set is language modeling. We start with sequences of
+words $w \in \mcV$ in some vocabulary $\mcV$ and aim to predict the last word in
+the sequence which we cannot observe. We can do this probabilistically by
+attempting to estimate,
+\[ p(w_i \mid w_1, \ldots, w_{i-1},\]
+that is, the conditional distribution over the last word conditional on the
+words leading up to it.
+
+In particular, there will be a special word, $w_\text{unk} \in \mcV$ which
+represent an unknown word; we use this whenever we encounter a token we had not
+previously seen in training. 
+
+In some models, we represent words with dense embeddings. That is, each word
+gets assigned a vector $\boldv \in \mathbb{R}^d$ where $d$ is the embedding
+dimension. These embeddings are trained as part of the model, but can also be
+initialized to pre-trained values.
+
 \section{Model and Algorithms}
 \section{Experiments}
 \section{Conclusion}
