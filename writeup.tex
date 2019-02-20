@@ -21,7 +21,7 @@ In this write-up, our main focus is language modeling. That is, given words in a
 sentence, can we predict the word that follows? We implemented a
 \nameref{subsec:trigram}, a embedding neural network model, an
 \nameref{subsec:lstm}, and a few extensions---including pre-trained embeddings,
-ensemble models, and multi-head attention decoders. 
+ensemble models, and multi-head attention decoders.
 
 \section{Problem Description}
 
@@ -30,7 +30,7 @@ To tackle language modeling, we start with sequences of words $w \in \mcV$ in
 some vocabulary $\mcV$ and aim to predict the last word in the sequence which we
 cannot observe. We can do this probabilistically by attempting to estimate,
 \begin{equation}
-p(w_i \mid w_1, \ldots, w_{i-1})
+p(w_t \mid w_1, \ldots, w_{t-1})
 \label{eq:probabilistic}
 \end{equation}
 that is, the conditional distribution over the last word conditional on the
@@ -38,7 +38,7 @@ words leading up to it.
 
 In particular, there will be a special word, $w_\text{unk} \in \mcV$ which
 represent an unknown word; we use this whenever we encounter a token we have not
-previously seen. 
+previously seen.
 
 In some models, we represent words with dense embeddings. That is, each word
 gets assigned a vector $\boldv \in \mathbb{R}^d$ where $d$ is the embedding
@@ -54,39 +54,38 @@ initialized to pre-trained values.
 In our trigram model, we aim to estimate the probability written in Equation
 \ref{eq:probabilistic}. This conditional probability is intractable itself
 because it's likely that we've never seen the exact sequence of words $w_1,
-\ldots, w_{i-1}$. However, we can gain tractability by dropping words toward the
+\ldots, w_{t-1}$. However, we can gain tractability by dropping words toward the
 beginning of the sequence, hoping that they don't affect the probability too
 much. That is, we hope that,
-\[ p(w_i \mid w_1, \ldots, w_{i-1}) \stackrel{?}{\approx} p(w_i \mid w_{i-2},
-w_{i-1}).\]
+\[ p(w_t \mid w_1, \ldots, w_{t-1}) \stackrel{?}{\approx} p(w_t \mid w_{t-2},
+w_{t-1}).\]
 Having replaced our first probability with a simpler one which conditions on
 less information, we can estimate the latter by its empirical sample estimator.
 In other words, we can take all the times in our training set when we've seen
-words $w_{i-2}, w_{i-1}$ adjacent to each other, and consider the empirical
+words $w_{t-2}, w_{t-1}$ adjacent to each other, and consider the empirical
 distribution of the word that follows them. We represent this sample
 approximation as $\hat{p}$ and write,
-\[ p (w_i \mid w_{i-2}, w_{i-1}) \approx \hat{p} (w_i \mid w_{i-2}, w_{i-1}).\]
+\[ p (w_t \mid w_{t-2}, w_{t-1}) \approx \hat{p} (w_t \mid w_{t-2}, w_{t-1}).\]
 By doing this, we've solved most of the intractability of conditioning on the
-entire sentence $w_1, \ldots, w_{i-1}$, but we still have some of the same
+entire sentence $w_1, \ldots, w_{t-1}$, but we still have some of the same
 problems. Namely, it's possible that in our training set, we either haven't seen
-words $w_{i-2}$ and $w_{i-1}$ together before, or we've seen them only a very
+words $w_{t-2}$ and $w_{t-1}$ together before, or we've seen them only a very
 small number of times such that the empirical probability distribution becomes a
 poor approximation. (To avoid division by zero errors, we adopt the convention
 that empirical probabilities are all 0 if we haven't seen the words being
 conditioned on before.) We can fix this by also considering the probabilities,
-\[ p(w_i) \text{ and } p(w_i \mid w_{i-1})\]
+\[ p(w_t) \text{ and } p(w_t \mid w_{t-1})\]
 which give us the unconditional probability of a word and the probability
 conditional on only the previous word. These have the benefit of being more
 tractable to estimate and the drawback of losing information. In the end, we
 calculate a blend of these three approximations:
-\[ \alpha_1 \hat{p}(w_i \mid w_{i-2}, w_{i-1}) + \alpha_2 \hat{p}(w_i \mid w_{i-1}) +
-(1-\alpha_1-\alpha_2)\hat{p}(w_i).\]
+\[ \alpha_1 \hat{p}(w_t \mid w_{t-2}, w_{t-1}) + \alpha_2
+\hat{p}(w_t \mid w_{t-1}) + (1-\alpha_1-\alpha_2)\hat{p}(w_t).\]
 Training the weights $(\alpha_1, \alpha_2)$ loads up most of our weight on
 $\alpha_1$ which suggests the latter two probabilities are better used as
 ``tie-breakers'' when conditioning on the previous bi-gram yields a small number
 of possibilities. In our final model, we use $(\alpha_1, \alpha_2) = (0.9,
-0.05)$. 
-
+0.05)$.
 
 \subsection{Neural Network Language Model}
 \label{sub:nnlm}
@@ -109,6 +108,23 @@ convolution trick in \Cref{fig:nnlm}.
     \includegraphics[width=.7\textwidth]{figs/nnlang.png}
     \caption{Diagram for \Cref{sub:nnlm}}
     \label{fig:nnlm}
+\end{figure}
+
+\subsection{LSTM}
+\label{subsec:lstm}
+
+A concern with our trigram model is that it completely ignores words more than
+two positions before the word we wish to predict. To the extent we believe these
+words are predictive (personal experience with language suggest that they should
+be!), the trigram model has an inherent limitation in its ability to model them.
+
+One way to combat this is with an LSTM.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=\textwidth]{figs/lstm-diagram.png}
+\caption{Depiction of LSTM working}
+\label{fig:lstmdiagram}
 \end{figure}
 
 \subsection{Multihead Attention}
@@ -155,8 +171,6 @@ $h_i^T h_j$
 to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
 links by looking ahead) before applying the softmax. 
 
-\subsection{LSTM}
-\label{subsec:lstm}
 
 
 \section{Experiments}
