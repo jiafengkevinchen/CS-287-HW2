@@ -106,7 +106,7 @@ convolution trick in \Cref{fig:nnlm}.
 \begin{figure}[tb]
     \centering
     \includegraphics[width=.7\textwidth]{figs/nnlang.png}
-    \caption{Diagram for \Cref{sub:nnlm}}
+    \caption{Diagram for \nameref{sub:nnlm}}
     \label{fig:nnlm}
 \end{figure}
 
@@ -126,7 +126,7 @@ dense embedding for the word $w_t$. The $h_t$ and $C_t$ vectors are state
 representations of the model, which are dependent on previous words and give the
 model a ``memory.'' The LSTM can thus theoretically condition on all previous
 text, and in practice exhibits long-term memory through its architecture on
-$C_t$ which is hard to change.
+$C_t$ which encourages only intentional changes over time.
 
 The LSTM is formally characterized by the following equations which determine
 the evolution of these vectors,
@@ -150,7 +150,7 @@ filtered version (captured by the multiplication with $o_t$) of the cell-state.
 \begin{figure}[htb]
 \centering
 \includegraphics[width=\textwidth]{figs/lstm-diagram.png}
-\caption{Depiction of LSTM inner-workings}
+\caption{Depiction of LSTM inner-workings \citep{olah2015understanding}}
 \label{fig:lstmdiagram}
 \end{figure}
 
@@ -176,7 +176,7 @@ predicting $t+1$.
 \begin{figure}[tb]
     \centering
     \includegraphics[width=\textwidth]{figs/attention.png}
-    \caption{Diagram for \Cref{sub:attn}. In this diagram, we predict the
+    \caption{Diagram for \nameref{sub:attn}. In this diagram, we predict the
     fourth word in the sentence by conditioning on the first three. We compute
     attention values of $h_3$ with $h_2$ and $h_1$ and concatenate $h_3$ with a
     context vector $a_1 h_1 + a_2 h_2$, where $a_i$ are the attention values.
