@@ -150,14 +150,12 @@ predicting $t+1$.
     \centering
     \includegraphics[width=\textwidth]{figs/attention.png}
     \caption{Diagram for \Cref{sub:attn}. In this diagram, we predict the
-    fourht word in the sentence by conditioning on the first three. We compute
+    fourth word in the sentence by conditioning on the first three. We compute
     attention values of $h_3$ with $h_2$ and $h_1$ and concatenate $h_3$ with a
     context vector $a_1 h_1 + a_2 h_2$, where $a_i$ are the attention values.
     We pass the resulting vector through a linear transformation and softmax
-    output.
-    In multi-head attention, we repeat the process for different projections of
-    $h_1,h_2,h_3$ and
-    concatenate the results. }
+    output. In multi-head attention, we repeat the process for different
+    projections of $h_1,h_2,h_3$ and concatenate the results.}
     \label{fig:attn}
 \end{figure}
 
@@ -170,8 +168,6 @@ inner product $h_i^T h_j$ for all $i,j$, and use a mask that sets entries with
 $h_i^T h_j$
 to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
 links by looking ahead) before applying the softmax. 
-
-
 
 \section{Experiments}
 \section{Conclusion}
