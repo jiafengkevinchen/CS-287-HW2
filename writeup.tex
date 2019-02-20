@@ -10,7 +10,7 @@
 \usepackage{nameref}
 \usepackage{pdflscape}
 
-\title{HW1: Classification}
+\title{HW2: Language Modeling}
 \author{Jiafeng Chen \and
 Francisco Rivera}
 \begin{document}
@@ -89,7 +89,7 @@ of possibilities. In our final model, we use $(\alpha_1, \alpha_2) = (0.9,
 
 We conclude this section with discussion on implementation. In particular, one
 easy way to keep track of all the conditional probabilities would be to keep a
-three dimensional $|\mcV| times |\mcV| \times |\mcV|$ tensor which keeps track
+three dimensional $|\mcV| \times |\mcV| \times |\mcV|$ tensor which keeps track
 of the trigram counts. However, vocabulary size is large, and this data
 structure can get prohibitively large very quickly. Moreover, we don't expect
 most trigrams to have any counts. Therefore, we use a sparse tensor to store
