@@ -245,15 +245,15 @@ find that different embeddings result in different model predictions. This
 suggests an ensemble model where we combine the predictions of LSTMs initialized
 to different embeddings. Such an ensemble gives us further predictive power.
 
+Lastly, we experimented with attention as in \cite{vaswani2017attention}.
+However, unlike in \cite{vaswani2017attention}, who only used attention layers,
+we used attention on RNN outputs, consistent with the literature on attention
+before \cite{vaswani2017attention}. The attention network did not work as well
+as we hoped. We conjecture that the underperformance of attention is
+attributable to low amounts of data and short sentences. Attention's strength is
+to capture long-range dependencies globally, but as a decoder, we can only look
+back and look at a few words in the past---since the sentences are short.
 
-\begin{itemize}
-     \item Trigram is decent (3-parameters). 
-     \item NN language model is bad. 
-     \item LSTM is good
-     \item Initiate to word2vec is good
-     \item Attention is bad because training set is small and short
-     \item Ensemble is very good since it's ensemble; though the LSTM outputs are fairly correlated
- \end{itemize} 
 \begin{landscape}
 \begin{table}[tb]
     
@@ -262,7 +262,7 @@ to different embeddings. Such an ensemble gives us further predictive power.
 \toprule
 model name                   &specifications\\
 \midrule
-\texttt{attention\_300.200.0.1dropout} & Multihead attention (3 heads), 300 embedding, 200 hidden, 0.1 dropout on linear transform\\
+\texttt{attention\_300.200.0.1dropout} & Multi-head attention (3 heads), 300 embedding, 200 hidden, 0.1 dropout on linear transform\\
 ensemble                     & Ensembling (equal weights) all LSTM/attention based models\\
 \texttt{lstm\_charngram.100d }         & 100 embedding, 100 hidden, initiate to charngram \\
 \texttt{lstm\_fasttext.en.300d }       & 300 embedding, 300 hidden, initiate to fasttext \\

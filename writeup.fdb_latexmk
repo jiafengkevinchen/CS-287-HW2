@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex writeup"] 1550704229 "writeup.aux" "writeup.bbl" "writeup" 1550704254
+["bibtex writeup"] 1550705917 "writeup.aux" "writeup.bbl" "writeup" 1550706126
   "/usr/local/texlive/2016/texmf-dist/bibtex/bst/base/apalike.bst" 1292289607 24635 604dafcc79f521a11ea73e506e1fbd98 ""
-  "writeup.aux" 1550704254 6666 acf8a89c09650e7c3e0d08e0fced8fbd ""
+  "writeup.aux" 1550705919 6912 babc6ea518a95b7c65b2f8545161bee4 ""
   "writeup.bib" 1550631677 3184 47c4b7d70e07da5faed32325932ce994 ""
   (generated)
   "writeup.blg"
   "writeup.bbl"
-["pdflatex"] 1550704253 "writeup.tex" "writeup.pdf" "writeup" 1550704254
+["pdflatex"] 1550705917 "writeup.tex" "writeup.pdf" "writeup" 1550706126
   "/Users/jiafengchen/Library/texmf/fonts/tfm/public/xypic/texfonts/xyatip10.tfm" 1381043914 608 50246cc71b0635b0ba0a5c10a0bf4257 ""
   "/Users/jiafengchen/Library/texmf/fonts/tfm/public/xypic/texfonts/xybsql10.tfm" 1381043914 608 4db60f15ea23b4ec2d796c6d568a63fa ""
   "/Users/jiafengchen/Library/texmf/fonts/tfm/public/xypic/texfonts/xybtip10.tfm" 1381043914 608 50246cc71b0635b0ba0a5c10a0bf4257 ""
@@ -45,7 +45,6 @@
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplb8r.tfm" 1136768653 2532 9ad73cf4dd2173a847f2a5f5608e0b9a ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplbi8r.tfm" 1136768653 2788 e071e05f6ae1a90dbbbc13a193c3a135 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplr7t.tfm" 1136768653 1804 7b5f73028f6509167f47ace9d69509ed ""
-  "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplr8c.tfm" 1136768653 1348 0e8eb69b4437626c0f6c9bed4a4e373c ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplr8r.tfm" 1136768653 2796 d37c29814a6717720ee1a7c9a0b2c3b8 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplri7t.tfm" 1136768653 1732 3671a0e54806deb8b706eb5e53aba0a5 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm" 1136768653 2720 70000d5e623e601132eab3cded5b819b ""
@@ -56,6 +55,7 @@
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmmib10.tfm" 1136768653 1524 554068197b70979a55370e6c6495f441 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmr10.tfm" 1136768653 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
+  "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmss10.tfm" 1136768653 1316 b636689f1933f24d1294acdf6041daaa ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmss12.tfm" 1136768653 1324 37b971caf729d7edd9cbb9f9b0ea76eb ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmss8.tfm" 1136768653 1296 d77f431d10d47c8ea2cc18cf45346274 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/public/cm/cmss9.tfm" 1136768653 1320 49357c421c0d469f88b867dd0c3d10e8 ""
@@ -90,7 +90,6 @@
   "/usr/local/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb" 1136849748 50022 90249cba7e3e4e9845f80328d6f9bd13 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/vf/adobe/palatino/pplb7t.vf" 1136768653 1380 798ef26de8f0a21f37c9b1147f4fe5d8 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf" 1136768653 1380 037725697594405988999f61172f52de ""
-  "/usr/local/texlive/2016/texmf-dist/fonts/vf/adobe/palatino/pplr8c.vf" 1136768653 3504 f65f653e1ad318a9d01b4af15300683a ""
   "/usr/local/texlive/2016/texmf-dist/fonts/vf/adobe/palatino/pplri7t.vf" 1136768653 1376 a5f9301e24d8e27c2286a3b415778d2d ""
   "/usr/local/texlive/2016/texmf-dist/fonts/vf/public/mathpazo/zplmb7m.vf" 1136768653 1812 dc1cd2f63ee5ab82b4396ae8c2c61a30 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf" 1136768653 1812 de7624743c8bafe2ce204bec2f72ce7e ""
@@ -172,7 +171,6 @@
   "/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ppl.fd" 1137110629 961 06b773644d960aac68add40fcb596208 ""
   "/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1zplm.fd" 1137110629 436 5e7baa1a259bab50a2bdffad6426f38c ""
   "/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/palatino.sty" 1156702453 872 1f85454596839f6c8d6101e1dc7e1871 ""
-  "/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ts1ppl.fd" 1137110629 619 35f1cf70bf09b6e2d22ee0902cfb1a8b ""
   "/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ufplmbb.fd" 1137110629 321 077609d8fc08b1f1181795378b603500 ""
   "/usr/local/texlive/2016/texmf-dist/tex/latex/setspace/setspace.sty" 1324344192 22913 a27d7908fc6f0385466454a966a316eb ""
   "/usr/local/texlive/2016/texmf-dist/tex/latex/subfig/subfig.sty" 1158586182 21369 9ef165ca6df8815c92e693146a376c92 ""
@@ -197,12 +195,12 @@
   "models/lstm_att.py" 1550630110 2928 68d66cf46bda65ba96e38b6986310d65 ""
   "models/neural_net_lang.py" 1550630775 1505 90d9670d73065e1f6f12997512e0c18b ""
   "models/trigram.py" 1550464598 4763 97b21d84364db4ec8faa6314e6d9437a ""
-  "writeup.aux" 1550704254 6666 acf8a89c09650e7c3e0d08e0fced8fbd ""
-  "writeup.bbl" 1550704229 685 f0c796923833fdcce55529b5238dfdfd "bibtex writeup"
-  "writeup.out" 1550704254 566 a69c6378ae56d2dc8090f92232014309 ""
-  "writeup.tex" 1550704252 13930 43d5d8741f6e6a25ca148a434993f5d6 ""
+  "writeup.aux" 1550705919 6912 babc6ea518a95b7c65b2f8545161bee4 ""
+  "writeup.bbl" 1550705917 685 f0c796923833fdcce55529b5238dfdfd "bibtex writeup"
+  "writeup.out" 1550705919 566 a69c6378ae56d2dc8090f92232014309 ""
+  "writeup.tex" 1550705915 16228 6a491ee15d47167bab709553b6eb99fe ""
   (generated)
-  "writeup.aux"
   "writeup.out"
-  "writeup.log"
+  "writeup.aux"
   "writeup.pdf"
+  "writeup.log"
