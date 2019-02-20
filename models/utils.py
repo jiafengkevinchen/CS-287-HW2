@@ -88,18 +88,28 @@ def count_parameters(model):
     return total
 
 
-def test_model(model, input_file, filename, TEXT, output_name="classes"):
+def test_model(model, input_file, filename, TEXT, output_name="classes", use_cuda=False):
     row_num = 0
+    V = len(TEXT.vocab)
     with open(filename, "w") as fout:
         print('id,word', file=fout)
         with open(input_file, 'r') as fin:
             for line in tqdm(fin.readlines()):
-                batch_text = NamedTensor(
+                if use_cuda:
+                    batch_text = NamedTensor(
                     Tensor([TEXT.vocab.stoi[s] for s in line.split(' ')[:-1]]).unsqueeze(1).long(),
                     names=('seqlen', 'batch')
-                )
-                _, best_words = ntorch.topk(model(batch_text)[{'seqlen': -1}],
+                    ).cuda()
+                else:
+                    batch_text = NamedTensor(
+                        Tensor([TEXT.vocab.stoi[s] for s in line.split(' ')[:-1]]).unsqueeze(1).long(),
+                        names=('seqlen', 'batch')
+                    )
+
+                _, best_words = ntorch.topk(model(batch_text)[{'seqlen': -1,
+                    'classes' : slice(1, V)}],
                                             output_name, 20)
+                best_words += 1
                 for row in best_words.cpu().numpy():
                     row_num += 1
                     print(f'{row_num},{tensor_to_text(row, TEXT)}', file=fout)
@@ -124,4 +134,4 @@ def evaluate_model(val_iter, args, **models):
 
 
 
-configure_azure()
+# configure_azure()
