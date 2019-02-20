@@ -242,7 +242,7 @@ Trigram & $\alpha_1 = 0.05 = \alpha_2$, $\alpha_3 = 0.9$\\
 \end{tabular}
     \caption{Hyperparameter specifications for models that we train. All LSTM
     models are one-layer (we experimented with two layers and dropout, but did
-    not achieve gains). All models are trained with Adam and learning rate
+    not achieve gains; this is consistent with the literature on LSTM and Penn tree bank dataset). All models are trained with Adam and learning rate
     $10^{-3}$ over 3 epochs (which is usually when validation error starts to
     increase). The trigram probabilities are somewhat arbitrarily chosen: We
     initially trained the trigram weights over the training set and observe
