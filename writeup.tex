@@ -87,6 +87,15 @@ $\alpha_1$ which suggests the latter two probabilities are better used as
 of possibilities. In our final model, we use $(\alpha_1, \alpha_2) = (0.9,
 0.05)$.
 
+We conclude this section with discussion on implementation. In particular, one
+easy way to keep track of all the conditional probabilities would be to keep a
+three dimensional $|\mcV| times |\mcV| \times |\mcV|$ tensor which keeps track
+of the trigram counts. However, vocabulary size is large, and this data
+structure can get prohibitively large very quickly. Moreover, we don't expect
+most trigrams to have any counts. Therefore, we use a sparse tensor to store
+these counts which reduces our memory usage to the number of distinct trigrams
+in the training dataset.
+
 \subsection{Neural Network Language Model}
 \label{sub:nnlm}
 Following \cite{bengio2003neural}, we implement a neural network language model
@@ -203,6 +212,28 @@ to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
 links by looking ahead) before applying the softmax.
 
 \section{Experiments}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+{}                                     & Loss  & MAP@20 & Perplexity \\
+model name                             &       &        & \\
+\midrule
+\texttt{ensemble}                      & 4.656 & 0.350  & 105.248 \\
+\texttt{attention\_300.200.0.1dropout} & 4.977 & 0.328  & 145.081 \\
+\texttt{lstm\_charngram.100d}          & 4.931 & 0.329  & 138.500 \\
+\texttt{lstm\_fasttext.en.300d}        & 4.896 & 0.328  & 133.750 \\
+\texttt{lstm\_glove.42B.300d}          & 4.879 & 0.331  & 131.564 \\
+\texttt{lstm\_glove.twitter.27B.200d}  & 4.917 & 0.331  & 136.595 \\
+\texttt{lstm\_word2vec.300d}           & 4.862 & 0.332  & 129.220 \\
+\texttt{nnlang.300.7.300}              & 5.691 & 0.254  & 296.330 \\
+\bottomrule
+\end{tabular}
+\caption{Performance metrics for different models}
+\label{table:performance}
+\end{table}
+
 \section{Conclusion}
 
 
@@ -213,8 +244,7 @@ links by looking ahead) before applying the softmax.
 \section{Model implementation}
 
 \lstinputlisting[caption=Trigram model implementation]{models/trigram.py}
-\lstinputlisting[caption=NNLM]
-{models/neural_net_lang.py}
+\lstinputlisting[caption=NNLM]{models/neural_net_lang.py}
 \lstinputlisting[caption=LSTM]{models/lstm.py}
 \lstinputlisting[caption=LSTM-attention]{models/lstm_att.py}
 \lstinputlisting[caption=Ensemble]{models/ensemble.py}
