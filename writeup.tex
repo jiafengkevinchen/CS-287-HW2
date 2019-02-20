@@ -127,7 +127,7 @@ One way to combat this is with an LSTM.
 \label{fig:lstmdiagram}
 \end{figure}
 
-\subsection{Multihead Attention}
+\subsection{Multi-head Attention}
 \label{sub:attn}
 
 Following \cite{vaswani2017attention}, we implement a variant of the multi-head
@@ -179,5 +179,18 @@ links by looking ahead) before applying the softmax.
 
 \bibliographystyle{apalike}
 \bibliography{writeup}
+
+\appendix
+\section{Model implementation}
+
+\lstinputlisting[caption=Trigram model implementation]{models/trigram.py}
+\lstinputlisting[caption=NNLM]
+{models/neural_net_lang.py}
+\lstinputlisting[caption=LSTM]{models/lstm.py}
+\lstinputlisting[caption=LSTM-attention]{models/lstm_att.py}
+\lstinputlisting[caption=Ensemble]{models/ensemble.py}
+
+
+
 
 \end{document}
