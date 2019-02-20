@@ -116,14 +116,41 @@ convolution trick in \Cref{fig:nnlm}.
 A concern with our trigram model is that it completely ignores words more than
 two positions before the word we wish to predict. To the extent we believe these
 words are predictive (personal experience with language suggest that they should
-be!), the trigram model has an inherent limitation in its ability to model them.
+be!), the trigram model has an inherent limitation in its ability to model that
+dependence.
 
-One way to combat this is with an LSTM.
+One way to combat this is with an LSTM, the architecture of which is depicted in
+\cref{fig:lstmdiagram}. At a high level, the LSTM functions by keeping track of
+three vectors: $v_t, C_t,$ and $h_t$. The first of these vectors is simply a
+dense embedding for the word $w_t$. The $h_t$ and $C_t$ vectors are state
+representations of the model, which are dependent on previous words and give the
+model a ``memory.'' The LSTM can thus theoretically condition on all previous
+text, and in practice exhibits long-term memory through its architecture on
+$C_t$ which is hard to change.
+
+The LSTM is formally characterized by the following equations which determine
+the evolution of these vectors,
+
+\begin{align}
+f_t &= \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \\
+i_t &= \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \\
+\tilde C_t &= \tanh(W_c \cdot [h_{t-1}, x_t] + b_c) \\
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde C_t \\
+o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o) \\
+h_t &= o_t \odot \tanh(C_t)
+\end{align}
+
+Roughly speaking, their intuitions are as follows: $\tilde C_t$ represents the
+new information that might be relevant for encoding into long-term memory. $f_t$
+captures the information that needs to be deleted from long-term memory, and
+$i_t$ captures the places where information needs to be added. Then, these are
+combined to determine the new $C_t$. The hidden state roughly captures a
+filtered version (captured by the multiplication with $o_t$) of the cell-state.
 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=\textwidth]{figs/lstm-diagram.png}
-\caption{Depiction of LSTM working}
+\caption{Depiction of LSTM inner-workings}
 \label{fig:lstmdiagram}
 \end{figure}
 
