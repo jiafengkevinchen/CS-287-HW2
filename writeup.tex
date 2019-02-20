@@ -212,12 +212,45 @@ to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
 links by looking ahead) before applying the softmax.
 
 \section{Experiments}
-We train a few models and document hyperparameters in \Cref{tab:spec}. Results are displayed in \Cref{table:performance}. 
+We train a few models and document hyperparameters in \Cref{tab:spec}. Results
+are displayed in \Cref{table:performance}. 
+
+For a simple model with only three undetermined parameters,\footnote{Of course,
+the training data is being memorized to make for a much larger model complexity,
+but there is only one canonical way to do this.} tri-grams performs
+exceptionally well. We conjecture that this is because training set sentences are not
+very long, so that most of the information is captured by the immediate
+predecessors of the word. In the limit, in a sentence with only three words,
+a trigram model conditions on all the information.
+
+% TODO: confirm this is empirically accurate
+The NNLM appears to underperform the trigram model by a bit, even when we
+condition on the past seven words rather than the past two. We believe the
+network architecture is not flexible enough to efficiently learn the regression
+function without significantly overfitting on a relatively small data set.
+
+LSTMs out-perform the previous two models, which we attribute to their ability
+to not only condition on local information (as do the previous models) but also
+on longer dependences. Unlike an NNLM where if we increase the window we look
+at, the model becomes too prone to overfitting, the LSTM architecture encourages
+``memorizing'' only relevant features that get mostly propagated through the
+long-term memory ``high-way.'' We also discover that initializing word
+embeddings to pre-trained values increases performance by 10 perplexity
+points---something we attribute to the pre-trained word embeddings capturing
+deeper relationships before we start training, and training reinforcing the
+useful ones which it might not have discovered had it been randomly initialized.
+
+Of the pre-trained embeddings, we find most success with word2vec. However, we
+find that different embeddings result in different model predictions. This
+suggests an ensemble model where we combine the predictions of LSTMs initialized
+to different embeddings. Such an ensemble gives us further predictive power.
+
+
 \begin{itemize}
      \item Trigram is decent (3-parameters). 
      \item NN language model is bad. 
      \item LSTM is good
-     \item Intiate to word2vec is good
+     \item Initiate to word2vec is good
      \item Attention is bad because training set is small and short
      \item Ensemble is very good since it's ensemble; though the LSTM outputs are fairly correlated
  \end{itemize} 
