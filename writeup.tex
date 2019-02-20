@@ -21,7 +21,7 @@ In this write-up, our main focus is language modeling. That is, given words in a
 sentence, can we predict the word that follows? We implemented a
 \nameref{subsec:trigram}, a embedding neural network model, an
 \nameref{subsec:lstm}, and a few extensions---including pre-trained embeddings,
-ensemble models, and multi-head attention decoders. 
+ensemble models, and multi-head attention decoders.
 
 \section{Problem Description}
 
@@ -38,7 +38,7 @@ words leading up to it.
 
 In particular, there will be a special word, $w_\text{unk} \in \mcV$ which
 represent an unknown word; we use this whenever we encounter a token we have not
-previously seen. 
+previously seen.
 
 In some models, we represent words with dense embeddings. That is, each word
 gets assigned a vector $\boldv \in \mathbb{R}^d$ where $d$ is the embedding
@@ -79,13 +79,13 @@ which give us the unconditional probability of a word and the probability
 conditional on only the previous word. These have the benefit of being more
 tractable to estimate and the drawback of losing information. In the end, we
 calculate a blend of these three approximations:
-\[ \alpha_1 \hat{p}(w_t \mid w_{t-2}, w_{t-1}) + \alpha_2 \hat{p}(w_t \mid w_{t-1}) +
-(1-\alpha_1-\alpha_2)\hat{p}(w_t).\]
+\[ \alpha_1 \hat{p}(w_t \mid w_{t-2}, w_{t-1}) + \alpha_2
+\hat{p}(w_t \mid w_{t-1}) + (1-\alpha_1-\alpha_2)\hat{p}(w_t).\]
 Training the weights $(\alpha_1, \alpha_2)$ loads up most of our weight on
 $\alpha_1$ which suggests the latter two probabilities are better used as
 ``tie-breakers'' when conditioning on the previous bi-gram yields a small number
 of possibilities. In our final model, we use $(\alpha_1, \alpha_2) = (0.9,
-0.05)$. 
+0.05)$.
 
 \subsection{Neural Network Language Model}
 \label{sub:nnlm}
@@ -113,7 +113,19 @@ convolution trick in \Cref{fig:nnlm}.
 \subsection{LSTM}
 \label{subsec:lstm}
 
-A concern with our trigram model is that it completely ignores words 
+A concern with our trigram model is that it completely ignores words more than
+two positions before the word we wish to predict. To the extent we believe these
+words are predictive (personal experience with language suggest that they should
+be!), the trigram model has an inherent limitation in its ability to model them.
+
+One way to combat this is with an LSTM.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=\textwidth]{figs/lstm-diagram.png}
+\caption{Depiction of LSTM working}
+\label{fig:lstmdiagram}
+\end{figure}
 
 \subsection{Multihead Attention}
 \label{sub:attn}
