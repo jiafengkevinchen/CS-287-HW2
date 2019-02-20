@@ -101,7 +101,7 @@ multilayer perceptron network with a softmax output into $|\mathcal V|$ classes.
 We implement this efficiently across a batch by using a convolution operation,
 since convolution acts like a moving window of size $k$. This way we can
 generate $T - k + 1$ predictions for a sentence of length $T$. We depict the
-convolution trick in \Cref{fig:nnlm}. 
+convolution trick in \Cref{fig:nnlm}.
 
 \begin{figure}[tb]
     \centering
@@ -154,6 +154,12 @@ filtered version (captured by the multiplication with $o_t$) of the cell-state.
 \label{fig:lstmdiagram}
 \end{figure}
 
+When creating an LSTM, we have two main hyper-parameters to decide on, the
+embedding dimension and the hidden dimension. We experiment with various choices
+for these hyper-parameters, finding that 300 for both maximizes our performance
+on the validation set using early-stopping as a regularization technique when we
+train.
+
 \subsection{Multi-head Attention}
 \label{sub:attn}
 
@@ -162,7 +168,7 @@ attention
 decoder network. Instead of passing the last hidden state from an LSTM $h_t$ to
 predict $h_{t+1}$, we use a concatenation of $h_t$ and a \emph{context vector}
 $c_t = a_1 h_1 + \cdots + a_{t-1} h_{t-1}$ for \emph{attention values}
-$a_1,\ldots, a_{t-1}$ residing in the unit simplex. Following 
+$a_1,\ldots, a_{t-1}$ residing in the unit simplex. Following
 \cite{vaswani2017attention}, we use the \emph{scaled attention} mechanism,
 where \[
 \bm a = \softmax\pr{\br{\frac{h_i^T h_t}{\sqrt{\dim(h_t)}}}_{i=1}^{t-1}}.
@@ -194,7 +200,7 @@ advantage of GPU hardware by applying attention as usual, computing every
 inner product $h_i^T h_j$ for all $i,j$, and use a mask that sets entries with
 $h_i^T h_j$
 to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
-links by looking ahead) before applying the softmax. 
+links by looking ahead) before applying the softmax.
 
 \section{Experiments}
 \section{Conclusion}
