@@ -212,8 +212,15 @@ to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
 links by looking ahead) before applying the softmax.
 
 \section{Experiments}
-<<<<<<< HEAD
-We train a few models and document hyperparameters in \Cref{tab:spec}. 
+We train a few models and document hyperparameters in \Cref{tab:spec}. Results are displayed in \Cref{table:performance}. 
+\begin{itemize}
+     \item Trigram is decent (3-parameters). 
+     \item NN language model is bad. 
+     \item LSTM is good
+     \item Intiate to word2vec is good
+     \item Attention is bad because training set is small and short
+     \item Ensemble is very good since it's ensemble; though the LSTM outputs are fairly correlated
+ \end{itemize} 
 \begin{landscape}
 \begin{table}[tb]
     
@@ -245,7 +252,6 @@ Trigram & $\alpha_1 = 0.05 = \alpha_2$, $\alpha_3 = 0.9$\\
     \label{tab:spec}
 \end{table}
 \end{landscape}
-=======
 
 \begin{table}[h]
 \centering
@@ -267,7 +273,6 @@ model name                             &       &        & \\
 \caption{Performance metrics for different models}
 \label{table:performance}
 \end{table}
->>>>>>> b219b3a743a6bdf3cbfac487091269413c74e06e
 
 \section{Conclusion}
 
