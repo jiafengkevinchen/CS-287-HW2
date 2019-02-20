@@ -197,6 +197,39 @@ to $-\infty$ if $j \le i$ (which correspond to the forbidden attention
 links by looking ahead) before applying the softmax. 
 
 \section{Experiments}
+We train a few models and document hyperparameters in \Cref{tab:spec}. 
+\begin{landscape}
+\begin{table}[tb]
+    
+    \centering
+\begin{tabular}{ll}
+\toprule
+model name                   &specifications\\
+\midrule
+\texttt{attention\_300.200.0.1dropout} & Multihead attention (3 heads), 300 embedding, 200 hidden, 0.1 dropout on linear transform\\
+ensemble                     & Ensembling (equal weights) all LSTM/attention based models\\
+\texttt{lstm\_charngram.100d }         & 100 embedding, 100 hidden, initiate to charngram \\
+\texttt{lstm\_fasttext.en.300d }       & 300 embedding, 300 hidden, initiate to fasttext \\
+\texttt{lstm\_glove.42B.300d    }      & 300 embedding, 300 hidden, initiate to GloVe-42B \\
+\texttt{lstm\_glove.twitter.27B.200d}  & 200 embedding, 200 hidden, initiate to GloVe-Twitter \\
+\texttt{lstm\_word2vec.300d         }  & 300 embedding, 300 hidden, initiate to word2vec \\
+\texttt{nnlang.300.7.300            } & NNLM, 300 embedding, 300 hidden, $k=7$\\
+Trigram & $\alpha_1 = 0.05 = \alpha_2$, $\alpha_3 = 0.9$\\
+\bottomrule
+\end{tabular}
+    \caption{Hyperparameter specifications for models that we train. All LSTM
+    models are one-layer (we experimented with two layers and dropout, but did
+    not achieve gains). All models are trained with Adam and learning rate
+    $10^{-3}$ over 3 epochs (which is usually when validation error starts to
+    increase). The trigram probabilities are somewhat arbitrarily chosen: We
+    initially trained the trigram weights over the training set and observe
+    that the gradient direction is always in the direction of increasing the
+    weight for the trigram term, $\alpha_3$; we then decided to use a $0.9,
+    0.05,0.05$ split, putting most weight on trigrams.}
+    \label{tab:spec}
+\end{table}
+\end{landscape}
+
 \section{Conclusion}
 
 
