@@ -15,7 +15,7 @@ def sparse_select(dims, indices, t):
     if type(dims) is not list:
         dims = [dims]
     if type(indices) is not list:
-        indices = [indic-es]
+        indices = [indices]
 
     t_indices = t._indices()
     t_values = t._values()
@@ -49,20 +49,20 @@ class Trigram:
 
         for batch in tqdm(train_iter):
             
-            i = batch.text.flatten().unsqueeze(0)
+            i = batch.text.values.flatten().unsqueeze(0)
             unigram_counts = sp.FloatTensor(
                  i, torch.ones(i.shape[1]), torch.Size([V])
             )
 
             unigram += unigram_counts
 
-            ii = torch.stack([batch.text[:-1,:], batch.text[1:, :]]).view(2, -1)
+            ii = torch.stack([batch.text.values[:-1,:], batch.text.values[1:, :]]).view(2, -1)
             bigram_counts = sp.FloatTensor(
                  ii, torch.ones(ii.shape[-1]), torch.Size([V, V])
             )
             bigram += bigram_counts
 
-            iii = torch.stack([batch.text[:-2,:], batch.text[1:-1, :], batch.text[2:, :]]).view(3, -1)
+            iii = torch.stack([batch.text.values[:-2,:], batch.text.values[1:-1, :], batch.text.values[2:, :]]).view(3, -1)
             trigram_counts = sp.FloatTensor(
                  iii, torch.ones(iii.shape[-1]), torch.Size([V, V, V])
             )
